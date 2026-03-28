@@ -17,9 +17,7 @@ function Books() {
     post_read_synthesis: '', strengths_weaknesses: ''
   });
 
-  useEffect(() => {
-    fetchAll();
-  }, []);
+  useEffect(() => { fetchAll(); }, []);
 
   async function fetchAll() {
     try {
@@ -62,8 +60,18 @@ function Books() {
 
   const filtered = bookList
     .filter(b => filter === 'all' || b.status === filter)
-    .filter(b => b.title.toLowerCase().includes(search.toLowerCase()) ||
-      (b.author_name || '').toLowerCase().includes(search.toLowerCase()));
+    .filter(b =>
+      b.title.toLowerCase().includes(search.toLowerCase()) ||
+      (b.author_name || '').toLowerCase().includes(search.toLowerCase())
+    );
+
+  const statusCounts = {
+    all: bookList.length,
+    Finished: bookList.filter(b => b.status === 'Finished').length,
+    Reading: bookList.filter(b => b.status === 'Reading').length,
+    'To Read': bookList.filter(b => b.status === 'To Read').length,
+    Abandoned: bookList.filter(b => b.status === 'Abandoned').length,
+  };
 
   if (loading) return <div className="loading">Loading...</div>;
 
@@ -78,7 +86,7 @@ function Books() {
 
       {showForm && (
         <div className="card" style={{ marginBottom: '2rem' }}>
-          <h2 style={{ marginBottom: '1rem', fontSize: '1.1rem' }}>Add New Book</h2>
+          <h2 style={{ marginBottom: '1.25rem', fontSize: '1rem', color: 'var(--text-secondary)' }}>Add New Book</h2>
           <form onSubmit={handleSubmit}>
             <div className="form-row">
               <div className="form-group">
@@ -130,41 +138,34 @@ function Books() {
             <div className="form-row">
               <div className="form-group">
                 <label>Start Date</label>
-                <input type="date" value={form.start_date}
-                  onChange={e => setForm({...form, start_date: e.target.value})} />
+                <input type="date" value={form.start_date} onChange={e => setForm({...form, start_date: e.target.value})} />
               </div>
               <div className="form-group">
                 <label>End Date</label>
-                <input type="date" value={form.end_date}
-                  onChange={e => setForm({...form, end_date: e.target.value})} />
+                <input type="date" value={form.end_date} onChange={e => setForm({...form, end_date: e.target.value})} />
               </div>
             </div>
             <div className="form-row">
               <div className="form-group">
                 <label>Pages</label>
-                <input type="number" value={form.pages}
-                  onChange={e => setForm({...form, pages: e.target.value})} />
+                <input type="number" value={form.pages} onChange={e => setForm({...form, pages: e.target.value})} />
               </div>
               <div className="form-group">
                 <label>Current Page</label>
-                <input type="number" value={form.current_page}
-                  onChange={e => setForm({...form, current_page: e.target.value})} />
+                <input type="number" value={form.current_page} onChange={e => setForm({...form, current_page: e.target.value})} />
               </div>
             </div>
             <div className="form-group">
               <label>Reading Notes</label>
-              <textarea value={form.reading_notes}
-                onChange={e => setForm({...form, reading_notes: e.target.value})} />
+              <textarea value={form.reading_notes} onChange={e => setForm({...form, reading_notes: e.target.value})} />
             </div>
             <div className="form-group">
               <label>Post-Read Synthesis</label>
-              <textarea value={form.post_read_synthesis}
-                onChange={e => setForm({...form, post_read_synthesis: e.target.value})} />
+              <textarea value={form.post_read_synthesis} onChange={e => setForm({...form, post_read_synthesis: e.target.value})} />
             </div>
             <div className="form-group">
               <label>Strengths / Weaknesses</label>
-              <textarea value={form.strengths_weaknesses}
-                onChange={e => setForm({...form, strengths_weaknesses: e.target.value})} />
+              <textarea value={form.strengths_weaknesses} onChange={e => setForm({...form, strengths_weaknesses: e.target.value})} />
             </div>
             <div className="form-group" style={{ flexDirection: 'row', alignItems: 'center', gap: '0.5rem' }}>
               <input type="checkbox" id="would_reread" style={{ width: 'auto' }}
@@ -177,18 +178,20 @@ function Books() {
         </div>
       )}
 
-      <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
         <input
           placeholder="Search books or authors..."
           value={search}
           onChange={e => setSearch(e.target.value)}
-          style={{ maxWidth: '300px' }}
+          style={{ maxWidth: '260px' }}
         />
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
-          {['all', 'Finished', 'Reading', 'To Read', 'Abandoned'].map(f => (
-            <button key={f} className={`btn ${filter === f ? 'btn-primary' : 'btn-ghost'}`}
-              onClick={() => setFilter(f)}>
-              {f === 'all' ? 'All' : f}
+        <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
+          {[['all', 'All'], ['Finished', 'Finished'], ['Reading', 'Reading'], ['To Read', 'To Read'], ['Abandoned', 'Abandoned']].map(([val, label]) => (
+            <button key={val}
+              className={`btn ${filter === val ? 'btn-primary' : 'btn-ghost'}`}
+              onClick={() => setFilter(val)}
+              style={{ fontSize: '0.8rem', padding: '0.35rem 0.85rem' }}>
+              {label} <span style={{ opacity: 0.6, marginLeft: '3px' }}>{statusCounts[val]}</span>
             </button>
           ))}
         </div>
@@ -200,35 +203,37 @@ function Books() {
         <div className="grid">
           {filtered.map(book => (
             <Link key={book.id} to={`/books/${book.id}`} style={{ textDecoration: 'none' }}>
-              <div className="card" style={{ cursor: 'pointer', transition: 'background 0.2s' }}
-                onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-hover)'}
-                onMouseLeave={e => e.currentTarget.style.background = 'var(--bg-card)'}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                  <span className={`badge badge-${book.status.toLowerCase().replace(' ', '_')}`}>
-                    {book.status}
-                  </span>
-                  {book.rating_overall && (
-                    <span className="stars">{'★'.repeat(book.rating_overall)}</span>
-                  )}
+              <div className="card card-hover" style={{ height: '100%' }}>
+                <div style={{
+                  height: '72px', background: '#0d1426', borderRadius: 'var(--radius)',
+                  marginBottom: '0.75rem', display: 'flex', alignItems: 'center',
+                  justifyContent: 'center', color: '#2a3d5a', fontSize: '1.5rem',
+                  border: '1px solid var(--border)'
+                }}>
+                  {book.cover_url
+                    ? <img src={book.cover_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 'var(--radius)' }} />
+                    : '📖'
+                  }
                 </div>
-                <div style={{ fontWeight: 600, marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
+                  <span className={`badge badge-${book.status.toLowerCase().replace(' ', '_')}`}>{book.status}</span>
+                  {book.rating_overall && <span className="stars">{'★'.repeat(book.rating_overall)}</span>}
+                </div>
+                <div style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '0.2rem', color: 'var(--text-primary)', lineHeight: 1.3 }}>
                   {book.title}
                 </div>
                 {book.author_name && (
-                  <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{book.author_name}</div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.2rem' }}>{book.author_name}</div>
                 )}
                 {book.series_name && (
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>{book.series_name}</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{book.series_name}</div>
                 )}
-                {book.status === 'Reading' && book.pages && (
-                  <div style={{ marginTop: '0.75rem' }}>
-                    <div style={{ background: 'var(--bg-primary)', borderRadius: '4px', height: '4px' }}>
-                      <div style={{
-                        background: 'var(--accent)', borderRadius: '4px', height: '4px',
-                        width: `${Math.min(100, (book.current_page / book.pages) * 100)}%`
-                      }} />
+                {book.status === 'Reading' && book.pages && book.current_page && (
+                  <div style={{ marginTop: '0.6rem' }}>
+                    <div className="progress-bar">
+                      <div className="progress-fill" style={{ width: `${Math.min(100, (book.current_page / book.pages) * 100)}%` }} />
                     </div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>
                       {book.current_page} / {book.pages} pages
                     </div>
                   </div>
