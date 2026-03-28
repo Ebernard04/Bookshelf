@@ -12,7 +12,7 @@ app.use('/api/books', require('./routes/books'));
 app.use('/api/authors', require('./routes/authors'));
 app.use('/api/series', require('./routes/series'));
 app.use('/api/universes', require('./routes/universes'));
-app.use('/api/reading-log', require('./routes/reading-log'));
+app.use('/api/reading-log', require('./routes/readingLog'));
 
 app.get('/health', (req, res) => {
     res.json({ status: 'ok' });
