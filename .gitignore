@@ -1,6 +1,7 @@
 #Dependencies
 node_modules/
 .env
+backend/.env
 
 #Database
 *.sql.bak
