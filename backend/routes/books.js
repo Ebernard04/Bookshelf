@@ -114,4 +114,58 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+router.post('/enrich-all', async (req, res) => {
+  try {
+    const API_KEY = process.env.GOOGLE_BOOKS_API_KEY;
+    
+    const result = await db.query(`
+      SELECT b.id, b.title, a.name as author_name
+      FROM books b
+      LEFT JOIN authors a ON b.author_id = a.id
+      WHERE b.cover_url IS NULL OR b.pages IS NULL
+      ORDER BY b.title ASC
+    `);
+
+    const books = result.rows;
+    res.json({ message: `Starting enrichment for ${books.length} books`, total: books.length });
+
+    // Run enrichment in background
+    (async () => {
+      for (const book of books) {
+        try {
+          const q = book.author_name
+            ? `intitle:${book.title}+inauthor:${book.author_name}`
+            : `intitle:${book.title}`;
+          const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(q)}&key=${API_KEY}&maxResults=1`;
+          const response = await fetch(url);
+          const data = await response.json();
+
+          if (data.items && data.items.length > 0) {
+            const info = data.items[0].volumeInfo;
+            const cover_url = info.imageLinks?.thumbnail?.replace('http://', 'https://') || null;
+            const pages = info.pageCount || null;
+            const isbn = info.industryIdentifiers?.find(i => i.type === 'ISBN_13')?.identifier || null;
+
+            await db.query(
+              `UPDATE books SET
+                cover_url = COALESCE(cover_url, $1),
+                pages = COALESCE(pages, $2),
+                isbn = COALESCE(isbn, $3)
+              WHERE id = $4`,
+              [cover_url, pages, isbn, book.id]
+            );
+          }
+        } catch (err) {
+          console.error(`Failed to enrich ${book.title}:`, err.message);
+        }
+        await new Promise(r => setTimeout(r, 1000));
+      }
+      console.log('✅ Background enrichment complete');
+    })();
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;

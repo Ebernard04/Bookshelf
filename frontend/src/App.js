@@ -7,6 +7,8 @@ import Authors from './pages/Authors';
 import Series from './pages/Series';
 import Universes from './pages/Universes';
 import ReadingLog from './pages/ReadingLog';
+import Settings from './pages/Settings';
+
 
 function App() {
   return (
@@ -20,6 +22,7 @@ function App() {
           <NavLink to="/series">Series</NavLink>
           <NavLink to="/universes">Universes</NavLink>
           <NavLink to="/reading-log">Reading Log</NavLink>
+          <NavLink to="/settings">Settings</NavLink>
         </nav>
         <main className="main">
           <Routes>
@@ -30,6 +33,7 @@ function App() {
             <Route path="/series" element={<Series />} />
             <Route path="/universes" element={<Universes />} />
             <Route path="/reading-log" element={<ReadingLog />} />
+            <Route path="/settings" element={<Settings />} />
           </Routes>
         </main>
       </div>
