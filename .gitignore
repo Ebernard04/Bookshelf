@@ -1,0 +1,14 @@
+#Dependencies
+node_modules/
+.env
+
+#Database
+*.sql.bak
+
+# OS
+.DS_Store
+Thumbs.db  
+
+
+#logs   
+*.log
