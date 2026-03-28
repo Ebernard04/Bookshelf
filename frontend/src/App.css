@@ -52,7 +52,7 @@
   margin-left: 220px;
   padding: 2rem 2.5rem;
   flex: 1;
-  max-width: 1300px;
+  max-width: calc(100vw - 220px);
 }
 
 .page-header {

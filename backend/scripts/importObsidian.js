@@ -236,7 +236,7 @@ async function importBooks(authorMap, seriesMap, universeMap) {
   }
 }
 
-async function importReadingLog(authorMap) {
+async function importReadingLog() {
   console.log('\n📅 Importing reading log...');
   const logDir = path.join(VAULT_PATH, 'Reading_Log/Years');
   if (!fs.existsSync(logDir)) return;
@@ -261,23 +261,32 @@ async function importReadingLog(authorMap) {
     const content = fs.readFileSync(file, 'utf8');
     const lines = content.split('\n');
 
-    for (const line of lines) {
-      const match = line.match(/\*\*(\d{4}-\d{2}-\d{2})\*\*\s*—\s*(Started|Finished):?\s*\[\[([^\]]+)\]\]/i);
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+
+      // Matches both — and - separators, with or without colon
+      const match = line.match(/\*\*(\d{4}-\d{2}-\d{2})\*\*\s*[—-]\s*(Started|Finished):?\s*\[\[([^\]]+)\]\]/i);
       if (!match) continue;
 
       const [, date, eventRaw, bookTitle] = match;
       const event_type = eventRaw.toLowerCase();
-      const noteMatch = line.match(/\]\]\s*\n?([\s\S]*?)(?=\n-|\n\n|$)/);
-      const note = noteMatch ? noteMatch[1].trim() : null;
+
+      // grab note from indented next line if present
+      let note = null;
+      if (i + 1 < lines.length && lines[i + 1].match(/^\s+[-*]/)) {
+        note = lines[i + 1].replace(/^\s+[-*]\s*/, '').trim() || null;
+      }
 
       try {
-        const bookRes = await pool.query('SELECT id FROM books WHERE title ILIKE $1 LIMIT 1', [bookTitle]);
+        const bookRes = await pool.query(
+          'SELECT id FROM books WHERE title ILIKE $1 LIMIT 1',
+          [bookTitle]
+        );
         const bookId = bookRes.rows[0]?.id || null;
 
         await pool.query(
           `INSERT INTO reading_log (log_date, event_type, book_id, note)
-           VALUES ($1, $2, $3, $4)
-           ON CONFLICT DO NOTHING`,
+           VALUES ($1, $2, $3, $4)`,
           [date, event_type, bookId, note]
         );
         console.log(`  ✓ ${date} ${event_type} ${bookTitle}`);
