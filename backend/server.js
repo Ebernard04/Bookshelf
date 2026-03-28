@@ -18,6 +18,10 @@ app.get('/health', (req, res) => {
     res.json({ status: 'ok' });
 });
 
+const path = require('path');
+//serve temp frontend static files
+app.use(express.static(path.join(__dirname, '../frontend')));
+
 app.listen(port, () => {
     console.log('Bookshelf API is running on port', port);
 });

@@ -11,5 +11,14 @@ services:
     ports:
       - "5432:5432"
 
+  frontend:
+    image: nginx:alpine
+    container_name: bookshelf-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+
 volumes:
   postgres_data:
