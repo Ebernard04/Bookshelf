@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookshelf</title>
+    <style>
+        body {
+            background: #1a1a2e;
+            color: #eee;
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        h1 { font-size: 3rem; margin-bottom: 0.5rem; }
+        p { color: #888; }
+        #status {
+            margin-top: 2rem;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            background: #16213e;
+            font-size: 0.9rem;
+        }
+        .ok { color: #4ecca3; }
+        .err { color: #e94560; }
+    </style>
+</head>
+<body>
+    <h1>📚 Bookshelf</h1>
+    <p>Work in progress...</p>
+    <div id="status">Checking API connection...</div>
+
+    <script>
+        fetch('http://192.168.50.67:3001/health')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('status').innerHTML =
+                    '<span class="ok">✅ API connected — ' + JSON.stringify(data) + '</span>';
+            })
+            .catch(err => {
+                document.getElementById('status').innerHTML =
+                    '<span class="err">❌ API not reachable — ' + err.message + '</span>';
+            });
+    </script>
+</body>
+</html>
