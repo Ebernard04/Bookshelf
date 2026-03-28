@@ -1,3 +1,12 @@
+CREATE TABLE authors (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    nationality VARCHAR(100),
+    notes TEXT,
+    trusted_author BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
 CREATE TABLE universes (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL UNIQUE,
@@ -5,15 +14,6 @@ CREATE TABLE universes (
     themes TEXT,
     status VARCHAR(20) DEFAULT 'active',
     notes TEXT,
-    created_at TIMESTAMP DEFAULT NOW()
-);
-
-CREATE TABLE authors (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE,
-    nationality VARCHAR(100),
-    notes TEXT,
-    trusted_author BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT NOW()
 );
 
