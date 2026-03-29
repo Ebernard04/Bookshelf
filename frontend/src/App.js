@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
 import './App.css';
 import Dashboard from './pages/Dashboard';
@@ -9,21 +10,33 @@ import Universes from './pages/Universes';
 import ReadingLog from './pages/ReadingLog';
 import Settings from './pages/Settings';
 
-
 function App() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  function closeSidebar() {
+    setSidebarOpen(false);
+  }
+
   return (
     <BrowserRouter>
       <div className="layout">
-        <nav className="sidebar">
+        <button className="hamburger" onClick={() => setSidebarOpen(!sidebarOpen)}>
+          {sidebarOpen ? '✕' : '☰'}
+        </button>
+
+        <div className={`sidebar-overlay ${sidebarOpen ? 'active' : ''}`} onClick={closeSidebar} />
+
+        <nav className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
           <div className="sidebar-logo">📚 Bookshelf</div>
-          <NavLink to="/">Dashboard</NavLink>
-          <NavLink to="/books">Books</NavLink>
-          <NavLink to="/authors">Authors</NavLink>
-          <NavLink to="/series">Series</NavLink>
-          <NavLink to="/universes">Universes</NavLink>
-          <NavLink to="/reading-log">Reading Log</NavLink>
-          <NavLink to="/settings">Settings</NavLink>
+          <NavLink to="/" onClick={closeSidebar}>Dashboard</NavLink>
+          <NavLink to="/books" onClick={closeSidebar}>Books</NavLink>
+          <NavLink to="/authors" onClick={closeSidebar}>Authors</NavLink>
+          <NavLink to="/series" onClick={closeSidebar}>Series</NavLink>
+          <NavLink to="/universes" onClick={closeSidebar}>Universes</NavLink>
+          <NavLink to="/reading-log" onClick={closeSidebar}>Reading Log</NavLink>
+          <NavLink to="/settings" onClick={closeSidebar}>Settings</NavLink>
         </nav>
+
         <main className="main">
           <Routes>
             <Route path="/" element={<Dashboard />} />
