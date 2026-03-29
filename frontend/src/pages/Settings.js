@@ -96,6 +96,11 @@ function Settings() {
                 )}
               </div>
             )}
+            {status && status.total === 0 && status.done === false && (
+                <div style={{ marginTop: '0.6rem', fontSize: '0.85rem', color: 'var(--accent)' }}>
+                    ✓ All books are already enriched
+                </div>
+            )}
 
             {error && (
               <div style={{ marginTop: '0.5rem', fontSize: '0.85rem', color: 'var(--danger)' }}>✗ {error}</div>
