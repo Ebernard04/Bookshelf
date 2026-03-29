@@ -91,11 +91,11 @@ function Books() {
             <div className="form-row">
               <div className="form-group">
                 <label>Title *</label>
-                <input required value={form.title} onChange={e => setForm({...form, title: e.target.value})} />
+                <input required value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} />
               </div>
               <div className="form-group">
                 <label>Author</label>
-                <select value={form.author_id} onChange={e => setForm({...form, author_id: e.target.value})}>
+                <select value={form.author_id} onChange={e => setForm({ ...form, author_id: e.target.value })}>
                   <option value="">Select author...</option>
                   {authorList.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
                 </select>
@@ -104,14 +104,14 @@ function Books() {
             <div className="form-row">
               <div className="form-group">
                 <label>Series</label>
-                <select value={form.series_id} onChange={e => setForm({...form, series_id: e.target.value})}>
+                <select value={form.series_id} onChange={e => setForm({ ...form, series_id: e.target.value })}>
                   <option value="">Select series...</option>
                   {seriesList.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                 </select>
               </div>
               <div className="form-group">
                 <label>Status</label>
-                <select value={form.status} onChange={e => setForm({...form, status: e.target.value})}>
+                <select value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}>
                   <option>To Read</option>
                   <option>Reading</option>
                   <option>Finished</option>
@@ -123,11 +123,11 @@ function Books() {
               <div className="form-group">
                 <label>Rating (1-5)</label>
                 <input type="number" min="1" max="5" value={form.rating_overall}
-                  onChange={e => setForm({...form, rating_overall: e.target.value})} />
+                  onChange={e => setForm({ ...form, rating_overall: e.target.value })} />
               </div>
               <div className="form-group">
                 <label>Format</label>
-                <select value={form.format_read} onChange={e => setForm({...form, format_read: e.target.value})}>
+                <select value={form.format_read} onChange={e => setForm({ ...form, format_read: e.target.value })}>
                   <option value="">Select...</option>
                   <option>ebook</option>
                   <option>physical</option>
@@ -138,39 +138,39 @@ function Books() {
             <div className="form-row">
               <div className="form-group">
                 <label>Start Date</label>
-                <input type="date" value={form.start_date} onChange={e => setForm({...form, start_date: e.target.value})} />
+                <input type="date" value={form.start_date} onChange={e => setForm({ ...form, start_date: e.target.value })} />
               </div>
               <div className="form-group">
                 <label>End Date</label>
-                <input type="date" value={form.end_date} onChange={e => setForm({...form, end_date: e.target.value})} />
+                <input type="date" value={form.end_date} onChange={e => setForm({ ...form, end_date: e.target.value })} />
               </div>
             </div>
             <div className="form-row">
               <div className="form-group">
                 <label>Pages</label>
-                <input type="number" value={form.pages} onChange={e => setForm({...form, pages: e.target.value})} />
+                <input type="number" value={form.pages} onChange={e => setForm({ ...form, pages: e.target.value })} />
               </div>
               <div className="form-group">
                 <label>Current Page</label>
-                <input type="number" value={form.current_page} onChange={e => setForm({...form, current_page: e.target.value})} />
+                <input type="number" value={form.current_page} onChange={e => setForm({ ...form, current_page: e.target.value })} />
               </div>
             </div>
             <div className="form-group">
               <label>Reading Notes</label>
-              <textarea value={form.reading_notes} onChange={e => setForm({...form, reading_notes: e.target.value})} />
+              <textarea value={form.reading_notes} onChange={e => setForm({ ...form, reading_notes: e.target.value })} />
             </div>
             <div className="form-group">
               <label>Post-Read Synthesis</label>
-              <textarea value={form.post_read_synthesis} onChange={e => setForm({...form, post_read_synthesis: e.target.value})} />
+              <textarea value={form.post_read_synthesis} onChange={e => setForm({ ...form, post_read_synthesis: e.target.value })} />
             </div>
             <div className="form-group">
               <label>Strengths / Weaknesses</label>
-              <textarea value={form.strengths_weaknesses} onChange={e => setForm({...form, strengths_weaknesses: e.target.value})} />
+              <textarea value={form.strengths_weaknesses} onChange={e => setForm({ ...form, strengths_weaknesses: e.target.value })} />
             </div>
             <div className="form-group" style={{ flexDirection: 'row', alignItems: 'center', gap: '0.5rem' }}>
               <input type="checkbox" id="would_reread" style={{ width: 'auto' }}
                 checked={form.would_reread}
-                onChange={e => setForm({...form, would_reread: e.target.checked})} />
+                onChange={e => setForm({ ...form, would_reread: e.target.checked })} />
               <label htmlFor="would_reread" style={{ color: 'var(--text-primary)' }}>Would Reread</label>
             </div>
             <button type="submit" className="btn btn-primary">Save Book</button>
@@ -205,14 +205,16 @@ function Books() {
             <Link key={book.id} to={`/books/${book.id}`} style={{ textDecoration: 'none' }}>
               <div className="card card-hover" style={{ height: '100%' }}>
                 <div style={{
-                  height: '72px', background: '#0d1426', borderRadius: 'var(--radius)',
-                  marginBottom: '0.75rem', display: 'flex', alignItems: 'center',
-                  justifyContent: 'center', color: '#2a3d5a', fontSize: '1.5rem',
+                  height: '140px',
+                  background: '#0d1426',
+                  borderRadius: 'var(--radius)',
+                  marginBottom: '0.75rem',
+                  overflow: 'hidden',
                   border: '1px solid var(--border)'
                 }}>
                   {book.cover_url
-                    ? <img src={book.cover_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 'var(--radius)' }} />
-                    : '📖'
+                    ? <img src={book.cover_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2a3d5a', fontSize: '2rem' }}>📖</div>
                   }
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
